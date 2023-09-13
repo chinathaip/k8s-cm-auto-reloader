@@ -10,11 +10,11 @@ COPY . .
 
 RUN CGO_ENABLED=0 go test -v
 
-RUN go build -o ./out/kbtg-go-assesment .
+RUN go build -o ./out/env-printer .
 
 
 # ====================
 FROM alpine:3.16.2
-COPY --from=build-base /app/out/kbtg-go-assesment /app/kbtg-go-assesment
+COPY --from=build-base /app/out/env-printer /app/env-printer
 
-CMD ["/app/kbtg-go-assesment"]
+CMD ["/app/env-printer"]
