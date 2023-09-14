@@ -1,0 +1,12 @@
+apiVersion: khing.khing.k8s/v1
+kind: Reloader
+metadata:
+  labels:
+    app.kubernetes.io/name: reloader
+    app.kubernetes.io/instance: reloader-sample
+    app.kubernetes.io/part-of: k8sops
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: k8sops
+  name: reloader-sample
+spec:
+  configmap: my-configmap

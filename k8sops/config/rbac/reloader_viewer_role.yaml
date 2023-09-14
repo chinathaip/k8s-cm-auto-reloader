@@ -1,0 +1,27 @@
+# permissions for end users to view reloaders.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: reloader-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: k8sops
+    app.kubernetes.io/part-of: k8sops
+    app.kubernetes.io/managed-by: kustomize
+  name: reloader-viewer-role
+rules:
+- apiGroups:
+  - khing.khing.k8s
+  resources:
+  - reloaders
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - khing.khing.k8s
+  resources:
+  - reloaders/status
+  verbs:
+  - get

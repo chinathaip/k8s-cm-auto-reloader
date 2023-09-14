@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: my-container
-          image: ghcr.io/chinathaip/k8s-cm-auto-reloader:d8800c1998f622a611747de03ced6dcb92aec12f
+          image: ghcr.io/chinathaip/k8s-cm-auto-reloader:4fb665f808337a7019bee2dcf642ca0ee1e88941
           resources:
             limits:
               cpu: "0.5" 
