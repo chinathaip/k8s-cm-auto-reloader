@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+  namespace: khing-test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-container
+          image: ghcr.io/chinathaip/k8s-cm-auto-reloader:d8800c1998f622a611747de03ced6dcb92aec12f
+          resources:
+            limits:
+              cpu: "0.5" 
+              memory: "512Mi"
+            requests:
+              cpu: "0.2"  
+              memory: "256Mi"
+          env:
+          - name: NAME
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: NAME  
