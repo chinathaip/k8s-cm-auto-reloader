@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: ghcr.io/chinathaip/k8s-cm-auto-reloader
-  newTag: controller4
+  newTag: controller5

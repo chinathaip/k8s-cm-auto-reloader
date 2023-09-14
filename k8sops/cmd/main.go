@@ -33,7 +33,7 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
 	khingv1 "github.com/chinathaip/k8s-cm-auto-reloader/api/v1"
-	"github.com/chinathaip/k8s-cm-auto-reloader/internal/controller"
+	"github.com/chinathaip/k8s-cm-auto-reloader/pkg/reloader"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -89,10 +89,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controller.ReloaderReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
+	reloaderReconciler := reloader.NewReconciler(mgr.GetClient(), mgr.GetScheme())
+	if err = reloaderReconciler.SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Reloader")
 		os.Exit(1)
 	}
