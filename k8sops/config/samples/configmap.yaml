@@ -5,3 +5,4 @@ metadata:
   namespace: khing-test
 data:
   NAME: "Khing"
+  AGE: "bello"

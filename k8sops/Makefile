@@ -1,6 +1,6 @@
 
 # Image URL to use all building/pushing image targets
-IMG ?= ghcr.io/chinathaip/k8s-cm-auto-reloader:controller5
+IMG ?= ghcr.io/chinathaip/k8s-cm-auto-reloader:controller7
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.28.0
 

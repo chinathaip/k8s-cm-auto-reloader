@@ -3,6 +3,7 @@ package reloader
 import (
 	"context"
 	"log"
+	"time"
 
 	khingv1 "github.com/chinathaip/k8s-cm-auto-reloader/api/v1"
 	appsv1 "k8s.io/api/apps/v1"
@@ -49,7 +50,7 @@ func (s StatusCreated) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Re
 		return ctrl.Result{}, err
 	}
 
-	return ctrl.Result{Requeue: true}, nil
+	return ctrl.Result{RequeueAfter: time.Second * 10}, nil
 }
 
 type StatusStored struct {
@@ -91,7 +92,7 @@ func (s StatusStored) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Res
 		}
 	}
 
-	return ctrl.Result{Requeue: true}, nil
+	return ctrl.Result{RequeueAfter: time.Second * 10}, nil
 }
 
 type StatusReloadRequired struct {
@@ -136,7 +137,7 @@ func (s StatusReloadRequired) Reconcile(ctx context.Context, req ctrl.Request) (
 					return ctrl.Result{}, err
 				}
 				log.Println("set replicas to 0: ", deployment.Name)
-
+				continue
 			}
 
 			if deployment.Status.Replicas == 0 {
@@ -146,7 +147,7 @@ func (s StatusReloadRequired) Reconcile(ctx context.Context, req ctrl.Request) (
 					return ctrl.Result{}, err
 				}
 				log.Println("set replicas to 3: ", deployment.Name)
-				reloader.Status.Type = statusReloaded
+				reloader.Status.Type = statusStored
 				if err := s.c.Status().Update(ctx, reloader); err != nil {
 					log.Println(err, "unable to update Reloader status")
 					return ctrl.Result{}, err
@@ -154,41 +155,5 @@ func (s StatusReloadRequired) Reconcile(ctx context.Context, req ctrl.Request) (
 			}
 		}
 	}
-	return ctrl.Result{Requeue: true}, nil
-}
-
-type StatusReloaded struct {
-	c client.Client
-}
-
-func (s StatusReloaded) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log.Println("in Reloaded")
-	reloader := &khingv1.Reloader{}
-	if err := s.c.Get(ctx, req.NamespacedName, reloader); err != nil {
-		log.Println(err, "unable to fetch Reloader")
-		return ctrl.Result{}, client.IgnoreNotFound(err)
-	}
-
-	cm := &corev1.ConfigMap{}
-	if err := s.c.Get(ctx, types.NamespacedName{
-		Name:      reloader.Spec.ConfigMap,
-		Namespace: req.Namespace,
-	}, cm); err != nil {
-		log.Println(err, "could not find the specified configmap")
-		return ctrl.Result{}, client.IgnoreNotFound(err)
-	}
-
-	for k, v := range cm.Data {
-		if reloader.Spec.Data[k] != v {
-			log.Println("Configmap data has been changed")
-			reloader.Status.Type = statusReloadRequired
-			if err := s.c.Status().Update(ctx, reloader); err != nil {
-				log.Println(err, "unable to update Reloader status")
-				return ctrl.Result{}, err
-			}
-			break
-		}
-	}
-
-	return ctrl.Result{Requeue: true}, nil
+	return ctrl.Result{RequeueAfter: time.Second * 10}, nil
 }

@@ -67,12 +67,9 @@ func (r *ReloaderReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return StatusStored{r.Client}.Reconcile(ctx, req)
 	case statusReloadRequired:
 		return StatusReloadRequired{r.Client}.Reconcile(ctx, req)
-	case statusReloaded:
-		return StatusReloaded{r.Client}.Reconcile(ctx, req)
 	default:
 		return StatusCreated{r.Client}.Reconcile(ctx, req)
 	}
-
 }
 
 // SetupWithManager sets up the controller with the Manager.
