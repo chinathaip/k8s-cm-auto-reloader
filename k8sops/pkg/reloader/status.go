@@ -122,12 +122,6 @@ func (s StatusReloadRequired) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	reloader.Spec.Data = cm.Data
-	if err := s.c.Update(ctx, reloader); err != nil {
-		log.Println(err, "unable to update Reloader")
-		return ctrl.Result{}, err
-	}
-
 	for _, deployment := range deploymentList.Items {
 		if useConfigMap(deployment.Spec.Template.Spec.Containers, reloader.Spec.ConfigMap) {
 			if *deployment.Spec.Replicas != 0 {
@@ -147,7 +141,7 @@ func (s StatusReloadRequired) Reconcile(ctx context.Context, req ctrl.Request) (
 					return ctrl.Result{}, err
 				}
 				log.Println("set replicas to 3: ", deployment.Name)
-				reloader.Status.Type = statusStored
+				reloader.Status.Type = statusCreated
 				if err := s.c.Status().Update(ctx, reloader); err != nil {
 					log.Println(err, "unable to update Reloader status")
 					return ctrl.Result{}, err
